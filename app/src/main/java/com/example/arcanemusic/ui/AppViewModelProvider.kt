@@ -11,7 +11,7 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             val app = arcaneApplication()
-            SongListViewModel(app.contentResolver)
+            SongListViewModel(app, app.contentResolver)
         }
     }
 }

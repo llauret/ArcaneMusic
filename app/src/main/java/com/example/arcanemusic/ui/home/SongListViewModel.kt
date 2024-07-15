@@ -1,8 +1,12 @@
 package com.example.arcanemusic.ui.home
 
+import android.app.Application
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.media.MediaPlayer
 import android.provider.MediaStore
-import androidx.lifecycle.ViewModel
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.arcanemusic.data.Music
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,8 +14,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SongListViewModel(
+    application: Application,
     private val contentResolver: ContentResolver,
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     private val _musicList = MutableStateFlow(HomeUiState())
     val musicList: StateFlow<HomeUiState> = _musicList
@@ -56,8 +61,32 @@ class SongListViewModel(
         }
     }
 
+    private var mediaPlayer: MediaPlayer? = null
+
     fun playSong(music: Music) {
-        
+        val musicUri = ContentUris.withAppendedId(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.idColumn.toLong()
+        )
+
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop()
+                it.release()
+                mediaPlayer = null
+                Log.i("SongListViewModel", "stopSong: ${music.titleColumn}")
+            }
+        }
+
+        mediaPlayer =
+            MediaPlayer.create(getApplication<Application>().applicationContext, musicUri).apply {
+                start()
+                Log.i("SongListViewModel", "playSong: ${music.titleColumn}")
+                setOnCompletionListener {
+                    it.release()
+                    mediaPlayer = null
+                    Log.i("SongListViewModel", "songCompleted: ${music.titleColumn}")
+                }
+            }
     }
 
 }

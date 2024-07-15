@@ -59,7 +59,9 @@ private fun MusicList(
 
 @Composable
 fun SongCard(
-    music: Music, modifier: Modifier = Modifier, viewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    music: Music,
+    modifier: Modifier = Modifier,
+    viewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     Card(
         modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
