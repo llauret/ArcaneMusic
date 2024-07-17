@@ -1,5 +1,7 @@
 package com.example.arcanemusic.ui.home
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +20,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.arcanemusic.R
 import com.example.arcanemusic.data.Music
 import com.example.arcanemusic.navigation.NavigationDestination
 import com.example.arcanemusic.ui.AppViewModelProvider
+import com.example.arcanemusic.ui.song.SongPlayerDestination
+import com.example.arcanemusic.ui.song.SongPlayerViewModel
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -31,41 +36,50 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    songPlayerViewModel: SongPlayerViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navController: NavController
 ) {
     val uiState by viewModel.musicList.collectAsState()
     val musicList = uiState.musicList
-    MusicList(
-        musicList = musicList, modifier = modifier
-    )
+    MusicList(musicList = musicList, modifier = modifier, onSongClicked = { music ->
+        songPlayerViewModel.setSelectedMusic(music)
+        navController.navigate(SongPlayerDestination.route)
+        Log.i("HomeScreen", "Navigating to SongPlayer with : $music")
+    }, playSong = { music ->
+        viewModel.playSong(music)
+    })
+
 }
 
 @Composable
 private fun MusicList(
-    musicList: List<Music>, modifier: Modifier = Modifier
+    musicList: List<Music>,
+    modifier: Modifier = Modifier,
+    onSongClicked: (Music) -> Unit,
+    playSong: (Music) -> Unit
 ) {
     LazyColumn(
         modifier = modifier.padding(16.dp)
     ) {
         items(musicList) { music ->
-            SongCard(
-                music = music, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
+            SongCard(music = music, modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clickable {
+                    onSongClicked(music)
+                    playSong(music)
+                })
         }
     }
 }
 
 @Composable
 fun SongCard(
-    music: Music,
-    modifier: Modifier = Modifier,
-    viewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    music: Music, modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        onClick = { viewModel.playSong(music) }
     ) {
         Column(
             modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
