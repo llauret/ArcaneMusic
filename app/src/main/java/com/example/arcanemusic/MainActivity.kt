@@ -9,10 +9,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +18,6 @@ class MainActivity : ComponentActivity() {
     ) { isGranted: Boolean ->
         if (isGranted) {
             Log.i("Permission", "Permission has been granted by the user")
-//            logMusicFiles()
         } else {
             Log.i("Permission", "Permission has been denied by the user")
         }
@@ -32,9 +27,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MaterialTheme {
-                Greeting("Salut")
-            }
             ArcaneApp()
         }
         requestPermission()
@@ -52,7 +44,6 @@ class MainActivity : ComponentActivity() {
                 this, permission
             ) == PackageManager.PERMISSION_GRANTED -> {
                 Log.i("Permission", "Permission has already been granted")
-//                logMusicFiles()
             }
 
             else -> {
@@ -60,18 +51,5 @@ class MainActivity : ComponentActivity() {
                 requestPermissionLauncher.launch(permission)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Salut $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MaterialTheme {
-        Greeting("Salut")
     }
 }
