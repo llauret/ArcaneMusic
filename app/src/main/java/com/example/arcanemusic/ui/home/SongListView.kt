@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -87,30 +86,41 @@ fun SongCard(
 
     Card(
         modifier = modifier
-            .height(50.dp)
+            .height(70.dp)
             .clickable(
                 interactionSource = interactionSource, indication = indication, onClick = onClick
             ),
         colors = CardDefaults.cardColors(containerColor = Color.Black),
         shape = RectangleShape,
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = music.titleColumn, style = MaterialTheme.typography.titleMedium.copy(
+                    text = music.titleColumn,
+                    style = MaterialTheme.typography.titleSmall.copy(
                         color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp
-                    )
+                    ),
+                    maxLines = 1,
+                    modifier = Modifier.fillMaxWidth(0.8f)
                 )
-                Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = music.artistColumn,
-                    style = MaterialTheme.typography.titleMedium.copy(color = Color.Gray)
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = Color.Gray
+                    )
                 )
             }
+            Text(
+                text = music.durationColumn,
+                style = MaterialTheme.typography.titleMedium.copy(color = Color.Gray),
+                modifier = Modifier.alignByBaseline()
+            )
         }
     }
 }

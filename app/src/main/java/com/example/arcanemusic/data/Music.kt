@@ -10,5 +10,6 @@ data class Music(
     @PrimaryKey(autoGenerate = true) val idColumn: Int = 0,
     val titleColumn: String,
     val artistColumn: String,
-    val dataColumn: String
+    val dataColumn: String,
+    val durationColumn: String
 )

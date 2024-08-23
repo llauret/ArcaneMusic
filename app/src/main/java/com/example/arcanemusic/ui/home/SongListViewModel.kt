@@ -36,7 +36,8 @@ class SongListViewModel(
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media.TITLE,
                     MediaStore.Audio.Media.ARTIST,
-                    MediaStore.Audio.Media.DATA
+                    MediaStore.Audio.Media.DATA,
+                    MediaStore.Audio.Media.DURATION
                 )
 
                 val cursor = contentResolver.query(musicUri, projection, null, null, null)
@@ -46,14 +47,17 @@ class SongListViewModel(
                     val titleColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
                     val artistColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
                     val dataColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+                    val durationColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
                     while (it.moveToNext()) {
                         val id = it.getInt(idColumn)
                         val title = it.getString(titleColumn)
                         val artist = it.getString(artistColumn)
                         val data = it.getString(dataColumn)
+                        val duration =
+                            MediaPlayerManager.convertMsToSeconds(it.getInt(durationColumn))
 
-                        val music = Music(id, title, artist, data)
+                        val music = Music(id, title, artist, data, duration)
                         tempList.add(music)
                     }
                 }

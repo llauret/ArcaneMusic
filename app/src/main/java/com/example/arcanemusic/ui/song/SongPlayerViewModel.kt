@@ -16,7 +16,6 @@ class SongPlayerViewModel(
     private val _selectedMusic = MutableStateFlow<Music?>(null)
     val selectedMusic: StateFlow<Music?> = _selectedMusic
 
-
     init {
         Log.i("SongPlayerViewModel", "SongPlayerViewModel created")
     }
@@ -28,7 +27,7 @@ class SongPlayerViewModel(
         )
     }
 
-    fun pausePlaySong(music: Music) {
+    fun pausePlaySong() {
         if (MediaPlayerManager.isPlaying()) {
             Log.i("SongPlayerViewModel", "Song is playing, pausing")
             MediaPlayerManager.pause()
@@ -36,6 +35,9 @@ class SongPlayerViewModel(
             Log.i("SongPlayerViewModel", "Song is paused, resuming")
             MediaPlayerManager.resume()
         }
-        Log.i("SongPlayerViewModel", "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG song : $music")
+    }
+
+    fun getSongDuration(): Int? {
+        return MediaPlayerManager.getSongDuration()
     }
 }
