@@ -1,6 +1,8 @@
 package com.example.arcanemusic.ui.song
 
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,12 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.arcanemusic.R
 import com.example.arcanemusic.data.Music
-import com.example.arcanemusic.media.MediaPlayerManager
 import com.example.arcanemusic.navigation.NavigationDestination
 import com.example.arcanemusic.ui.AppViewModelProvider
 
@@ -118,6 +120,19 @@ fun SongControllerButtons(
     val repeat = painterResource(R.mipmap.repeat)
     val skipForward = painterResource(R.mipmap.forward)
     val skipBackward = painterResource(R.mipmap.backward)
+
+    val isPlaying by songPlayerViewModel.isPlaying.collectAsState()
+    val rotation by animateFloatAsState(
+        targetValue = if (isPlaying) 360f else 0f,
+        animationSpec = spring(dampingRatio = 1f, stiffness = 10f),
+        label = ""
+    )
+    val alpha by animateFloatAsState(
+        targetValue = if (isPlaying) 0.5f else 1f,
+        animationSpec = spring(dampingRatio = 1f, stiffness = 10f),
+        label = ""
+    )
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
     ) {
@@ -134,10 +149,11 @@ fun SongControllerButtons(
             modifier = Modifier.size(50.dp)
         )
         Image(
-            painter = if (MediaPlayerManager.isPlaying()) pauseButton else playButton,
-            contentDescription = if (MediaPlayerManager.isPlaying()) "Pause button" else "Play button",
+            painter = if (isPlaying) pauseButton else playButton,
+            contentDescription = if (isPlaying) "Pause button" else "Play button",
             modifier = Modifier
                 .size(50.dp)
+                .graphicsLayer(rotationZ = rotation, alpha = alpha)
                 .clickable(onClick = {
                     songPlayerViewModel.pausePlaySong()
                 })

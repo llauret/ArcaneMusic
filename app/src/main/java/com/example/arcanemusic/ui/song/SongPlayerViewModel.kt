@@ -16,6 +16,9 @@ class SongPlayerViewModel(
     private val _selectedMusic = MutableStateFlow<Music?>(null)
     val selectedMusic: StateFlow<Music?> = _selectedMusic
 
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying
+
     init {
         Log.i("SongPlayerViewModel", "SongPlayerViewModel created")
     }
@@ -29,11 +32,11 @@ class SongPlayerViewModel(
 
     fun pausePlaySong() {
         if (MediaPlayerManager.isPlaying()) {
-            Log.i("SongPlayerViewModel", "Song is playing, pausing")
             MediaPlayerManager.pause()
+            _isPlaying.value = false
         } else {
-            Log.i("SongPlayerViewModel", "Song is paused, resuming")
             MediaPlayerManager.resume()
+            _isPlaying.value = true
         }
     }
 
