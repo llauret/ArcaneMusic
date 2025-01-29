@@ -42,18 +42,23 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    songListViewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory),
     songPlayerViewModel: SongPlayerViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavController
 ) {
-    val uiState by viewModel.musicList.collectAsState()
+    val uiState by songListViewModel.musicList.collectAsState()
     val musicList = uiState.musicList
     MusicList(musicList = musicList, modifier = modifier, onSongClicked = { music ->
         songPlayerViewModel.setSelectedMusic(music)
+        songListViewModel.setSongIndex(musicList.indexOf(music))
+        songListViewModel.playSong(music)
         navController.navigate(SongPlayerDestination.route)
-        Log.i("HomeScreen", "Navigating to SongPlayer with : $music")
+        Log.i(
+            "HomeScreen",
+            "Navigating to SongPlayer with : $music"
+        )
     }, playSong = { music ->
-        viewModel.playSong(music)
+        songListViewModel.playSong(music)
     })
 
 }

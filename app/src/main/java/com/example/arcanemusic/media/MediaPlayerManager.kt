@@ -35,12 +35,20 @@ object MediaPlayerManager {
         mediaPlayer = null
     }
 
+    fun seekTo(position: Int) {
+        mediaPlayer?.seekTo(position)
+    }
+
     fun isPlaying(): Boolean {
         return mediaPlayer?.isPlaying == true
     }
 
     fun getSongDuration(): Int? {
         return mediaPlayer?.duration
+    }
+
+    fun getCurrentPosition(): Int? {
+        return mediaPlayer?.currentPosition
     }
 
     fun convertMsToSeconds(duration: Int): String {

@@ -3,14 +3,18 @@ package com.example.arcanemusic.ui.song
 import android.content.ContentResolver
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.arcanemusic.ArcaneApplication
 import com.example.arcanemusic.data.Music
 import com.example.arcanemusic.media.MediaPlayerManager
+import com.example.arcanemusic.ui.home.SongListViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class SongPlayerViewModel(
-    application: ArcaneApplication, private val contentResolver: ContentResolver
+    application: ArcaneApplication,
+    private val contentResolver: ContentResolver
 ) : AndroidViewModel(application) {
 
     private val _selectedMusic = MutableStateFlow<Music?>(null)
@@ -19,15 +23,8 @@ class SongPlayerViewModel(
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying
 
-    init {
-        Log.i("SongPlayerViewModel", "SongPlayerViewModel created")
-    }
-
     fun setSelectedMusic(music: Music) {
         _selectedMusic.value = music
-        Log.i(
-            "SongPlayerViewModel", "Selected music: $music :   Variable : ${_selectedMusic.value}"
-        )
     }
 
     fun pausePlaySong() {

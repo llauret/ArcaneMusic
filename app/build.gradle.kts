@@ -70,4 +70,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Dagger-Hilt
+//    implementation(libs.hilt.android)
+//    kapt(libs.hilt.compiler)
+//    implementation(libs.androidx.hilt.navigation.compose)
 }
