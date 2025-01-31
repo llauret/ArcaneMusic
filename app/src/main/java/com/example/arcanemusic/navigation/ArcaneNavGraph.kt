@@ -33,8 +33,7 @@ fun ArcaneNavHost(
         }
         composable(route = SongPlayerDestination.route) {
             SongPlayer(
-                songPlayerViewModel = songPlayerViewModel,
-                songListViewModel = songListViewModel,
+                songPlayerViewModel = songPlayerViewModel
             )
         }
     }

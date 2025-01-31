@@ -1,13 +1,17 @@
 package com.example.arcanemusic.ui.song
 
+import android.app.Application
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.arcanemusic.ArcaneApplication
 import com.example.arcanemusic.data.Music
+import com.example.arcanemusic.data.MusicRepositoryObject
 import com.example.arcanemusic.media.MediaPlayerManager
-import com.example.arcanemusic.ui.home.SongListViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,6 +27,15 @@ class SongPlayerViewModel(
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying
 
+    private val _currentIndex = MutableStateFlow(-1)
+    val currentIndex: StateFlow<Int> = _currentIndex
+
+    private val _currentMusic = MutableStateFlow<Music?>(null)
+    val currentMusic: StateFlow<Music?> = _currentMusic
+
+    private val _isOnRepeat = MutableStateFlow(false)
+    private val isOnRepeat: StateFlow<Boolean> = _isOnRepeat
+
     fun setSelectedMusic(music: Music) {
         _selectedMusic.value = music
     }
@@ -37,7 +50,92 @@ class SongPlayerViewModel(
         }
     }
 
+    fun setSongIndex(index: Int) {
+        _currentIndex.value = index
+    }
+
+    fun skipForward() {
+        val current = _currentIndex.value
+        Log.i("SongListViewModel", "Current index in skipForward: $current")
+        if (current == -1) return
+
+        val nextIndex = current + 1
+        val songs = MusicRepositoryObject.musicList.value.musicList
+
+        Log.i("SongListViewModel", "Next index: $nextIndex, Songs size: ${songs.size}")
+        if (nextIndex < songs.size) {
+            playSongAtIndex(nextIndex)
+        }
+    }
+
+    fun skipBackward() {
+        val current = _currentIndex.value
+        Log.i("SongListViewModel", "Current index in skipBackward: $current")
+        if (current == -1) return
+        if (MediaPlayerManager.getCurrentPosition()!! > 5000) {
+            MediaPlayerManager.seekTo(0)
+            return
+        }
+        val prevIndex = current - 1
+        if (prevIndex >= 0) {
+            playSongAtIndex(prevIndex)
+        }
+    }
+
+    fun repeatSong() {
+        _isOnRepeat.value = !_isOnRepeat.value
+        val current = _currentIndex.value
+        if (current == -1) return
+
+        viewModelScope.launch {
+            while (isOnRepeat.value) {
+                if (MediaPlayerManager.isEndOfSong()) {
+                    playSongAtIndex(current)
+                }
+                delay(1000)
+            }
+        }
+    }
+
+    fun shuffleSongs() {
+        val songs = MusicRepositoryObject.musicList.value.musicList
+        val shuffledSongs = songs.shuffled()
+        MusicRepositoryObject.updateMusicList(shuffledSongs)
+    }
+
+    fun playSong(music: Music) {
+        val index = MusicRepositoryObject.musicList.value.musicList.indexOfFirst { it.idColumn == music.idColumn }
+        Log.i("SongListViewModel", "playSong: ${music.titleColumn} at index $index")
+        if (index != -1) {
+            playSongAtIndex(index)
+        }
+    }
+
+    private fun playSongAtIndex(index: Int) {
+        val songs = MusicRepositoryObject.musicList.value.musicList
+        if (index in songs.indices) {
+            val music = songs[index]
+            val context = getApplication<Application>().applicationContext
+            val musicUri = ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.idColumn.toLong()
+            )
+
+            MediaPlayerManager.play(context, musicUri) {
+                skipForward()
+            }
+            Log.i("SongListViewModel", "playSongAtIndex: ${music.titleColumn} at index $index")
+
+            _currentIndex.value = index
+            Log.i("SongListViewModel", "Current index: ${_currentIndex.value}")
+            _currentMusic.value = music
+        }
+    }
+
     fun getSongDuration(): Int? {
         return MediaPlayerManager.getSongDuration()
     }
 }
+
+data class HomeUiState(
+    val musicList: MutableList<Music> = mutableListOf()
+)

@@ -54,7 +54,6 @@ import com.example.arcanemusic.data.Music
 import com.example.arcanemusic.media.MediaPlayerManager
 import com.example.arcanemusic.navigation.NavigationDestination
 import com.example.arcanemusic.ui.AppViewModelProvider
-import com.example.arcanemusic.ui.home.SongListViewModel
 import kotlinx.coroutines.delay
 
 object SongPlayerDestination : NavigationDestination {
@@ -64,8 +63,7 @@ object SongPlayerDestination : NavigationDestination {
 
 @Composable
 fun SongPlayer(
-    songPlayerViewModel: SongPlayerViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    songListViewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    songPlayerViewModel: SongPlayerViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val selectedMusic by songPlayerViewModel.selectedMusic.collectAsState()
 
@@ -77,7 +75,6 @@ fun SongPlayer(
                 SongMainScreen(modifier = Modifier.weight(1f))
                 SongBottomBar(
                     music = music,
-                    songListViewModel = songListViewModel,
                     songPlayerViewModel = songPlayerViewModel
                 )
             }
@@ -126,7 +123,6 @@ fun SongMainScreen(
 fun SongBottomBar(
     music: Music,
     modifier: Modifier = Modifier,
-    songListViewModel: SongListViewModel,
     songPlayerViewModel: SongPlayerViewModel
 ) {
     Column(
@@ -139,7 +135,6 @@ fun SongBottomBar(
         SongCurrentlyPlayed(music = music)
         SongControllerButtons(
             music = music,
-            songListViewModel = songListViewModel,
             songPlayerViewModel = songPlayerViewModel
         )
     }
@@ -268,7 +263,6 @@ fun formatTime(millis: Int): String {
 @Composable
 fun SongControllerButtons(
     songPlayerViewModel: SongPlayerViewModel,
-    songListViewModel: SongListViewModel,
     music: Music
 ) {
     val playButton = painterResource(R.mipmap.playbutton)
@@ -298,7 +292,7 @@ fun SongControllerButtons(
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         IconButton(
-            onClick = { /* TODO: Shuffle functionality */ },
+            onClick = { songPlayerViewModel.shuffleSongs() },
             modifier = Modifier
                 .size(60.dp)
                 .background(Color.Transparent, shape = CircleShape)
@@ -311,7 +305,7 @@ fun SongControllerButtons(
         }
 
         IconButton(
-            onClick = { /* TODO: Skip backward functionality */ },
+            onClick = { songPlayerViewModel.skipBackward() },
             modifier = Modifier
                 .size(60.dp)
                 .background(Color.Transparent, shape = CircleShape)
@@ -342,7 +336,7 @@ fun SongControllerButtons(
         IconButton(
             onClick = {
                 songPlayerViewModel.setSelectedMusic(music = music)
-                songListViewModel.skipForward()
+                songPlayerViewModel.skipForward()
             },
             modifier = Modifier
                 .size(60.dp)
@@ -356,7 +350,7 @@ fun SongControllerButtons(
         }
 
         IconButton(
-            onClick = { /* TODO: Repeat functionality */ },
+            onClick = { songPlayerViewModel.repeatSong() },
             modifier = Modifier
                 .size(60.dp)
                 .background(Color.Transparent, shape = CircleShape)

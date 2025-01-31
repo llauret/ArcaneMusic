@@ -6,8 +6,10 @@ import android.net.Uri
 
 object MediaPlayerManager {
     private var mediaPlayer: MediaPlayer? = null
+    private var onCompletionListener: (() -> Unit)? = null
 
-    fun play(context: Context, uri: Uri) {
+    fun play(context: Context, uri: Uri, onCompletion: (() -> Unit)) {
+        onCompletionListener = onCompletion
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(context, uri)
         } else {
@@ -16,6 +18,10 @@ object MediaPlayerManager {
             mediaPlayer?.prepare()
         }
         mediaPlayer?.start()
+        mediaPlayer?.setOnCompletionListener {
+            onCompletionListener?.invoke()
+        }
+
     }
 
     fun pause() {
@@ -49,6 +55,10 @@ object MediaPlayerManager {
 
     fun getCurrentPosition(): Int? {
         return mediaPlayer?.currentPosition
+    }
+
+    fun isEndOfSong(): Boolean {
+        return mediaPlayer?.currentPosition == mediaPlayer?.duration
     }
 
     fun convertMsToSeconds(duration: Int): String {
