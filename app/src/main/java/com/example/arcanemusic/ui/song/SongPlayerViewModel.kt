@@ -30,14 +30,17 @@ class SongPlayerViewModel(
     private val _currentIndex = MutableStateFlow(-1)
     val currentIndex: StateFlow<Int> = _currentIndex
 
-    private val _currentMusic = MutableStateFlow<Music?>(null)
-    val currentMusic: StateFlow<Music?> = _currentMusic
-
     private val _isOnRepeat = MutableStateFlow(false)
     private val isOnRepeat: StateFlow<Boolean> = _isOnRepeat
 
     fun setSelectedMusic(music: Music) {
+        Log.i("SongListViewModel", "setSelectedMusic: ${music.titleColumn}")
         _selectedMusic.value = music
+    }
+
+    private fun setSongIndex(index: Int) {
+        Log.i("SongListViewModel", "setSongIndex: $index")
+        _currentIndex.value = index
     }
 
     fun pausePlaySong() {
@@ -48,10 +51,6 @@ class SongPlayerViewModel(
             MediaPlayerManager.resume()
             _isPlaying.value = true
         }
-    }
-
-    fun setSongIndex(index: Int) {
-        _currentIndex.value = index
     }
 
     fun skipForward() {
@@ -83,6 +82,7 @@ class SongPlayerViewModel(
     }
 
     fun repeatSong() {
+        Log.i("SongListViewModel", "Repeat song")
         _isOnRepeat.value = !_isOnRepeat.value
         val current = _currentIndex.value
         if (current == -1) return
@@ -104,10 +104,13 @@ class SongPlayerViewModel(
     }
 
     fun playSong(music: Music) {
-        val index = MusicRepositoryObject.musicList.value.musicList.indexOfFirst { it.idColumn == music.idColumn }
+        val index =
+            MusicRepositoryObject.musicList.value.musicList.indexOfFirst { it.idColumn == music.idColumn }
         Log.i("SongListViewModel", "playSong: ${music.titleColumn} at index $index")
         if (index != -1) {
             playSongAtIndex(index)
+            setSelectedMusic(music)
+            setSongIndex(index)
         }
     }
 
@@ -127,7 +130,7 @@ class SongPlayerViewModel(
 
             _currentIndex.value = index
             Log.i("SongListViewModel", "Current index: ${_currentIndex.value}")
-            _currentMusic.value = music
+            _selectedMusic.value = music
         }
     }
 

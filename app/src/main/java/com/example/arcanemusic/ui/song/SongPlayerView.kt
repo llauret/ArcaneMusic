@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -234,6 +236,15 @@ fun SongProgressBar() {
                 .height(8.dp)
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+                .pointerInput(Unit) {
+                    detectTapGestures { offset ->
+                        val newProgress = (offset.x / size.width).coerceIn(0f, 1f)
+                        val newPosition = (newProgress * totalDuration).toInt()
+                        MediaPlayerManager.seekTo(newPosition)
+                        currentProgress = newProgress
+                        currentTime = newPosition
+                    }
+                }
         ) {
             Box(
                 modifier = Modifier

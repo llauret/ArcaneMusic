@@ -49,8 +49,6 @@ fun HomeScreen(
     val uiState by songListViewModel.musicList.collectAsState()
     val musicList = uiState.musicList
     MusicList(musicList = musicList, modifier = modifier, onSongClicked = { music ->
-        songPlayerViewModel.setSelectedMusic(music)
-        songPlayerViewModel.setSongIndex(musicList.indexOf(music))
         songPlayerViewModel.playSong(music)
         navController.navigate(SongPlayerDestination.route)
         Log.i(
