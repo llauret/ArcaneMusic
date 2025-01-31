@@ -31,7 +31,10 @@ class SongPlayerViewModel(
     val currentIndex: StateFlow<Int> = _currentIndex
 
     private val _isOnRepeat = MutableStateFlow(false)
-    private val isOnRepeat: StateFlow<Boolean> = _isOnRepeat
+    val isOnRepeat: StateFlow<Boolean> = _isOnRepeat
+
+    private val _isOnShuffle = MutableStateFlow(false)
+    val isOnShuffle: StateFlow<Boolean> = _isOnShuffle
 
     fun setSelectedMusic(music: Music) {
         Log.i("SongListViewModel", "setSelectedMusic: ${music.titleColumn}")
@@ -98,6 +101,8 @@ class SongPlayerViewModel(
     }
 
     fun shuffleSongs() {
+        Log.i("SongListViewModel", "Shuffle songs")
+        _isOnShuffle.value = !_isOnShuffle.value
         val songs = MusicRepositoryObject.musicList.value.musicList
         val shuffledSongs = songs.shuffled()
         MusicRepositoryObject.updateMusicList(shuffledSongs)
