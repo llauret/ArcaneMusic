@@ -3,8 +3,8 @@ package com.example.arcanemusic.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "favorite_playlists")
+@Entity(tableName = "favorite_playlist")
 data class FavoritePlaylist(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    val name: String
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val musicId: Int
 )

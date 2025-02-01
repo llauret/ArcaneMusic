@@ -1,6 +1,5 @@
 package com.example.arcanemusic.ui.song
 
-import FavoritePlaylist
 import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -9,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.arcanemusic.ArcaneApplication
+import com.example.arcanemusic.data.FavoritePlaylist
 import com.example.arcanemusic.data.Music
 import com.example.arcanemusic.data.MusicDatabase
 import com.example.arcanemusic.data.MusicRepositoryObject

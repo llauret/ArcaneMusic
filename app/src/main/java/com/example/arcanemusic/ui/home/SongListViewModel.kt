@@ -47,7 +47,7 @@ class SongListViewModel(
                     val duration = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
                     while (it.moveToNext()) {
-                        val id = it.getLong(id)
+                        val id = it.getInt(id)
                         val title = it.getString(title)
                         val artist = it.getString(artist)
                         val data = it.getString(data)

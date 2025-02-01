@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.compose.compiler)
-    id("kotlin-kapt")
+//    alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
 }
 
 android {
@@ -43,7 +43,7 @@ android {
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -52,10 +52,10 @@ android {
     }
 }
 
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
-}
+//composeCompiler {
+//    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+//}
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -79,9 +79,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // Room
+
+    //Room
     implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.core.ktx.v1120)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    // Testing
+    androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(libs.androidx.junit.v115)
 
     // Dagger-Hilt
 //    implementation(libs.hilt.android)
