@@ -58,7 +58,10 @@ object MediaPlayerManager {
     }
 
     fun isEndOfSong(): Boolean {
-        return mediaPlayer?.currentPosition == mediaPlayer?.duration
+        val margin = 1000
+        val currentPosition = mediaPlayer?.currentPosition ?: 0
+        val duration = mediaPlayer?.duration ?: 0
+        return currentPosition >= (duration - margin)
     }
 
     fun convertMsToSeconds(duration: Int): String {

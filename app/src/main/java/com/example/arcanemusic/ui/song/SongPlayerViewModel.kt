@@ -1,5 +1,6 @@
 package com.example.arcanemusic.ui.song
 
+import FavoritePlaylist
 import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -9,7 +10,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.arcanemusic.ArcaneApplication
 import com.example.arcanemusic.data.Music
+import com.example.arcanemusic.data.MusicDatabase
 import com.example.arcanemusic.data.MusicRepositoryObject
+import com.example.arcanemusic.data.OfflineMusicRepository
 import com.example.arcanemusic.media.MediaPlayerManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +21,10 @@ import kotlinx.coroutines.launch
 
 class SongPlayerViewModel(
     application: ArcaneApplication,
-    private val contentResolver: ContentResolver
+    private val contentResolver: ContentResolver,
+    private val offlineMusicRepository: OfflineMusicRepository = OfflineMusicRepository(
+        MusicDatabase.getDataBase(application).musicDAO()
+    )
 ) : AndroidViewModel(application) {
 
     private val _selectedMusic = MutableStateFlow<Music?>(null)
@@ -37,7 +43,7 @@ class SongPlayerViewModel(
     val isOnShuffle: StateFlow<Boolean> = _isOnShuffle
 
     fun setSelectedMusic(music: Music) {
-        Log.i("SongListViewModel", "setSelectedMusic: ${music.titleColumn}")
+        Log.i("SongListViewModel", "setSelectedMusic: ${music.title}")
         _selectedMusic.value = music
     }
 
@@ -103,15 +109,25 @@ class SongPlayerViewModel(
     fun shuffleSongs() {
         Log.i("SongListViewModel", "Shuffle songs")
         _isOnShuffle.value = !_isOnShuffle.value
-        val songs = MusicRepositoryObject.musicList.value.musicList
-        val shuffledSongs = songs.shuffled()
-        MusicRepositoryObject.updateMusicList(shuffledSongs)
+        Log.i("SongListViewModel", "Is on shuffle: ${_isOnShuffle.value}")
+
+        viewModelScope.launch {
+            while (_isOnShuffle.value) {
+                if (MediaPlayerManager.isEndOfSong()) {
+                    val randomIndex =
+                        MusicRepositoryObject.musicList.value.musicList.indices.random()
+                    Log.i("SongListViewModel", "Random index: $randomIndex")
+                    playSongAtIndex(randomIndex)
+                }
+                delay(1000)
+            }
+        }
     }
 
     fun playSong(music: Music) {
         val index =
-            MusicRepositoryObject.musicList.value.musicList.indexOfFirst { it.idColumn == music.idColumn }
-        Log.i("SongListViewModel", "playSong: ${music.titleColumn} at index $index")
+            MusicRepositoryObject.musicList.value.musicList.indexOfFirst { it.id == music.id }
+        Log.i("SongListViewModel", "playSong: ${music.title} at index $index")
         if (index != -1) {
             playSongAtIndex(index)
             setSelectedMusic(music)
@@ -125,17 +141,26 @@ class SongPlayerViewModel(
             val music = songs[index]
             val context = getApplication<Application>().applicationContext
             val musicUri = ContentUris.withAppendedId(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.idColumn.toLong()
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.id.toLong()
             )
 
             MediaPlayerManager.play(context, musicUri) {
                 skipForward()
             }
-            Log.i("SongListViewModel", "playSongAtIndex: ${music.titleColumn} at index $index")
+            Log.i("SongListViewModel", "playSongAtIndex: ${music.title} at index $index")
 
             _currentIndex.value = index
             Log.i("SongListViewModel", "Current index: ${_currentIndex.value}")
             _selectedMusic.value = music
+        }
+    }
+
+    fun addToFavoritePlaylist(music: Music) {
+        viewModelScope.launch {
+            val favorite = FavoritePlaylist(id = System.currentTimeMillis(), musicId = music.id)
+            Log.i("SongListViewModel", "Adding to favorite playlist: $favorite")
+            offlineMusicRepository.addToFavoritePlaylist(favorite)
+            Log.i("SongListViewModel", "Added to favorite playlist")
         }
     }
 

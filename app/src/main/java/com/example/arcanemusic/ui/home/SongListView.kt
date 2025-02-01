@@ -105,7 +105,7 @@ fun SongCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = music.titleColumn,
+                    text = music.title,
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp
                     ),
@@ -113,14 +113,14 @@ fun SongCard(
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
                 Text(
-                    text = music.artistColumn,
+                    text = music.artist,
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = Color.Gray
                     )
                 )
             }
             Text(
-                text = music.durationColumn,
+                text = music.duration,
                 style = MaterialTheme.typography.titleMedium.copy(color = Color.Gray),
                 modifier = Modifier.alignByBaseline()
             )

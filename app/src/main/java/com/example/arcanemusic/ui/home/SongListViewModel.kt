@@ -40,19 +40,19 @@ class SongListViewModel(
                 val cursor = contentResolver.query(musicUri, projection, null, null, null)
 
                 cursor?.use {
-                    val idColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
-                    val titleColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
-                    val artistColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-                    val dataColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
-                    val durationColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+                    val id = it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+                    val title = it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+                    val artist = it.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+                    val data = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+                    val duration = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
                     while (it.moveToNext()) {
-                        val id = it.getInt(idColumn)
-                        val title = it.getString(titleColumn)
-                        val artist = it.getString(artistColumn)
-                        val data = it.getString(dataColumn)
+                        val id = it.getLong(id)
+                        val title = it.getString(title)
+                        val artist = it.getString(artist)
+                        val data = it.getString(data)
                         val duration =
-                            MediaPlayerManager.convertMsToSeconds(it.getInt(durationColumn))
+                            MediaPlayerManager.convertMsToSeconds(it.getInt(duration))
 
                         val music = Music(id, title, artist, data, duration)
                         tempList.add(music)

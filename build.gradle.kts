@@ -2,6 +2,8 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    kotlin("kapt") version "2.1.10"
+    alias(libs.plugins.compose.compiler) apply false
 //    id("com.google.dagger.hilt.android")
 //    id("org.jetbrains.kotlin.kapt")
 }

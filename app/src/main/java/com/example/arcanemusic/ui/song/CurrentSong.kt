@@ -36,7 +36,7 @@ import com.example.arcanemusic.R
 import com.example.arcanemusic.data.Music
 
 @Composable
-fun SongCurrentlyPlayed(music: Music) {
+fun SongCurrentlyPlayed(music: Music, songPlayerViewModel: SongPlayerViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -90,7 +90,7 @@ fun SongCurrentlyPlayed(music: Music) {
                 )
 
                 Text(
-                    text = music.titleColumn,
+                    text = music.title,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = (-0.5).sp
@@ -103,7 +103,7 @@ fun SongCurrentlyPlayed(music: Music) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = music.artistColumn,
+                    text = music.artist,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium
@@ -120,7 +120,7 @@ fun SongCurrentlyPlayed(music: Music) {
                 modifier = Modifier
                     .padding(start = 16.dp)
                     .size(24.dp)
-                    .clickable { }
+                    .clickable { songPlayerViewModel.addToFavoritePlaylist(music) }
             )
         }
     }

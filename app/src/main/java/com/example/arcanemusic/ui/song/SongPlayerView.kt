@@ -47,8 +47,7 @@ fun SongPlayer(
             Column(modifier = Modifier.fillMaxSize()) {
                 SongMainScreen(modifier = Modifier.weight(1f))
                 SongBottomBar(
-                    music = music,
-                    songPlayerViewModel = songPlayerViewModel
+                    music = music, songPlayerViewModel = songPlayerViewModel
                 )
             }
         }
@@ -90,9 +89,7 @@ fun SongMainScreen(
 
 @Composable
 fun SongBottomBar(
-    music: Music,
-    modifier: Modifier = Modifier,
-    songPlayerViewModel: SongPlayerViewModel
+    music: Music, modifier: Modifier = Modifier, songPlayerViewModel: SongPlayerViewModel
 ) {
     Column(
         modifier = modifier
@@ -101,10 +98,9 @@ fun SongBottomBar(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         SongProgressBar()
-        SongCurrentlyPlayed(music = music)
+        SongCurrentlyPlayed(music = music, songPlayerViewModel)
         SongControllerButtons(
-            music = music,
-            songPlayerViewModel = songPlayerViewModel
+            music = music, songPlayerViewModel = songPlayerViewModel
         )
     }
 }

@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "music")
 data class Music(
-    @PrimaryKey(autoGenerate = true) val idColumn: Int = 0,
-    val titleColumn: String,
-    val artistColumn: String,
-    val dataColumn: String,
-    val durationColumn: String
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val title: String,
+    val artist: String,
+    val data: String,
+    val duration: String
 )
