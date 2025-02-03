@@ -6,7 +6,9 @@ import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.arcanemusic.data.Music
+import com.example.arcanemusic.data.MusicDatabase
 import com.example.arcanemusic.data.MusicRepositoryObject
+import com.example.arcanemusic.data.OfflineMusicRepository
 import com.example.arcanemusic.media.MediaPlayerManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,9 @@ import kotlinx.coroutines.withContext
 class SongListViewModel(
     application: Application,
     private val contentResolver: ContentResolver,
+    private val offlineMusicRepository: OfflineMusicRepository = OfflineMusicRepository(
+        MusicDatabase.getDataBase(application).musicDAO()
+    )
 ) : AndroidViewModel(application) {
 
     val musicList: StateFlow<HomeUiState> = MusicRepositoryObject.musicList
@@ -61,7 +66,7 @@ class SongListViewModel(
                 tempList
             }
 
-            MusicRepositoryObject.updateMusicList(musicMutableList)
+            MusicRepositoryObject.insertMusic(musicMutableList)
         }
     }
 }

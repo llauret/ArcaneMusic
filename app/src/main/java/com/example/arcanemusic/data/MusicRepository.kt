@@ -8,13 +8,15 @@ import kotlinx.coroutines.flow.StateFlow
 interface MusicRepository {
     fun getAllMusic(): Flow<MutableList<Music>>
     suspend fun addToFavoritePlaylist(favorite: FavoritePlaylist)
+    suspend fun insertMusic(music: Music)
+    suspend fun getFavoritePlaylist(): Flow<List<Music>>
 }
 
 object MusicRepositoryObject {
     private val _musicList = MutableStateFlow(HomeUiState())
     val musicList: StateFlow<HomeUiState> = _musicList
 
-    fun updateMusicList(newList: List<Music>) {
+    fun insertMusic(newList: List<Music>) {
         _musicList.value = HomeUiState(newList.toMutableList())
     }
 

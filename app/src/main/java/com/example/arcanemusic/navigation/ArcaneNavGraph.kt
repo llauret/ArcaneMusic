@@ -10,6 +10,9 @@ import com.example.arcanemusic.ui.AppViewModelProvider
 import com.example.arcanemusic.ui.home.HomeDestination
 import com.example.arcanemusic.ui.home.HomeScreen
 import com.example.arcanemusic.ui.home.SongListViewModel
+import com.example.arcanemusic.ui.nav.NavigationBarItem
+import com.example.arcanemusic.ui.playlist.FavoritePlaylist
+import com.example.arcanemusic.ui.playlist.FavoritePlaylistViewModel
 import com.example.arcanemusic.ui.song.SongPlayer
 import com.example.arcanemusic.ui.song.SongPlayerDestination
 import com.example.arcanemusic.ui.song.SongPlayerViewModel
@@ -21,10 +24,12 @@ fun ArcaneNavHost(
 ) {
     val songPlayerViewModel: SongPlayerViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val songListViewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val favoritePlaylistViewModel: FavoritePlaylistViewModel =
+        viewModel(factory = AppViewModelProvider.Factory)
     NavHost(
         navController = navController, startDestination = HomeDestination.route, modifier = modifier
     ) {
-        composable(route = HomeDestination.route) {
+        composable(route = NavigationBarItem.Home.route) {
             HomeScreen(
                 songPlayerViewModel = songPlayerViewModel,
                 songListViewModel = songListViewModel,
@@ -35,6 +40,9 @@ fun ArcaneNavHost(
             SongPlayer(
                 songPlayerViewModel = songPlayerViewModel
             )
+        }
+        composable(route = NavigationBarItem.Playlist.route) {
+            FavoritePlaylist(favoritePlaylistViewModel)
         }
     }
 }
