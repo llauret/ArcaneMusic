@@ -1,12 +1,16 @@
 package com.example.arcanemusic.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,8 +24,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +40,8 @@ import com.example.arcanemusic.navigation.NavigationDestination
 import com.example.arcanemusic.ui.AppViewModelProvider
 import com.example.arcanemusic.ui.song.SongPlayerDestination
 import com.example.arcanemusic.ui.song.SongPlayerViewModel
+import com.example.arcanemusic.ui.theme.earwigFactory
+import com.example.arcanemusic.ui.theme.p5royal
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -87,43 +96,72 @@ fun SongCard(
     val interactionSource = remember { MutableInteractionSource() }
     val indication = rememberRipple(bounded = true)
 
-    Card(
+    Box(
         modifier = modifier
-            .height(70.dp)
+            .fillMaxWidth()
+            .height(120.dp)
             .clickable(
                 interactionSource = interactionSource, indication = indication, onClick = onClick
-            ),
-        colors = CardDefaults.cardColors(containerColor = Color.Black),
-        shape = RectangleShape,
+            )
     ) {
-        Row(
+        Image(
+            painter = painterResource(R.drawable.card),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.fillMaxSize(),
+        )
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxSize()
+                .padding(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+            shape = RectangleShape,
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             ) {
-                Text(
-                    text = music.title,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp
-                    ),
-                    maxLines = 1,
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                )
-                Text(
-                    text = music.artist,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        color = Color.Gray
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = music.title,
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp,
+                            fontFamily = p5royal
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .offset(y = 50.dp)
                     )
+                    Text(
+                        text = music.artist,
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            color = Color.Gray,
+                            fontFamily = earwigFactory,
+                            fontSize = 25.sp
+                        ),
+                        modifier = Modifier
+                            .rotate(-10f)
+                            .offset(y = (-15).dp)
+                    )
+                }
+                Text(
+                    text = music.duration,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.Gray,
+                        fontFamily = p5royal,
+                        fontSize = 30.sp
+                    ),
+                    modifier = Modifier
+                        .alignByBaseline()
+                        .rotate(-15f)
+                        .offset(y = (10).dp)
+                        .offset(x = (-25).dp)
                 )
             }
-            Text(
-                text = music.duration,
-                style = MaterialTheme.typography.titleMedium.copy(color = Color.Gray),
-                modifier = Modifier.alignByBaseline()
-            )
         }
     }
 }
