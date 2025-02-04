@@ -1,20 +1,23 @@
 package com.example.arcanemusic.ui.nav
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.arcanemusic.R
 
 sealed class NavigationBarItem(val route: String, val icon: Int, val title: String) {
-    data object Home : NavigationBarItem("home", R.drawable.ic_launcher_background, "Home")
+    data object Home : NavigationBarItem("home", R.drawable.home, "Home")
     data object Playlist :
-        NavigationBarItem("playlist", R.drawable.ic_launcher_background, "Playlist")
+        NavigationBarItem("playlist", R.drawable.playlist, "Playlist")
 }
 
 @Composable
@@ -30,8 +33,10 @@ fun NavigationBar(navController: NavController) {
             NavigationBarItem(
                 icon = {
                     Icon(
-                        ImageVector.vectorResource(id = item.icon),
-                        contentDescription = item.title
+                        painterResource(id = item.icon),
+                        contentDescription = item.title,
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
                     )
                 },
                 label = { Text(item.title) },
