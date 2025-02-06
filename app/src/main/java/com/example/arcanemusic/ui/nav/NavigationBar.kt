@@ -16,6 +16,7 @@ import com.example.arcanemusic.R
 
 sealed class NavigationBarItem(val route: String, val icon: Int, val title: String) {
     data object Home : NavigationBarItem("home", R.drawable.home, "Home")
+    data object Artist : NavigationBarItem("artist", R.drawable.home, "Artist")
     data object Playlist :
         NavigationBarItem("playlist", R.drawable.playlist, "Playlist")
 }
@@ -24,6 +25,7 @@ sealed class NavigationBarItem(val route: String, val icon: Int, val title: Stri
 fun NavigationBar(navController: NavController) {
     val items = listOf(
         NavigationBarItem.Home,
+        NavigationBarItem.Artist,
         NavigationBarItem.Playlist
     )
     NavigationBar {

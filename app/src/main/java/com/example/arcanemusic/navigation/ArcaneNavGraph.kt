@@ -7,6 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.arcanemusic.ui.AppViewModelProvider
+import com.example.arcanemusic.ui.artist.ArtistView
+import com.example.arcanemusic.ui.artist.ArtistViewModel
 import com.example.arcanemusic.ui.home.HomeDestination
 import com.example.arcanemusic.ui.home.HomeScreen
 import com.example.arcanemusic.ui.home.SongListViewModel
@@ -26,6 +28,7 @@ fun ArcaneNavHost(
     val songListViewModel: SongListViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val favoritePlaylistViewModel: FavoritePlaylistViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
+    val artistViewModel: ArtistViewModel = viewModel(factory = AppViewModelProvider.Factory)
     NavHost(
         navController = navController, startDestination = HomeDestination.route, modifier = modifier
     ) {
@@ -43,6 +46,9 @@ fun ArcaneNavHost(
         }
         composable(route = NavigationBarItem.Playlist.route) {
             FavoritePlaylist(favoritePlaylistViewModel)
+        }
+        composable(route = NavigationBarItem.Artist.route) {
+            ArtistView(artistViewModel)
         }
     }
 }

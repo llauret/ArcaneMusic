@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.arcanemusic.ArcaneApplication
 import com.example.arcanemusic.data.MusicDatabase
 import com.example.arcanemusic.data.OfflineMusicRepository
+import com.example.arcanemusic.ui.artist.ArtistViewModel
 import com.example.arcanemusic.ui.home.SongListViewModel
 import com.example.arcanemusic.ui.playlist.FavoritePlaylistViewModel
 import com.example.arcanemusic.ui.song.SongPlayerViewModel
@@ -30,6 +31,12 @@ object AppViewModelProvider {
             val musicDatabase = MusicDatabase.getDataBase(app)
             val offlineMusicRepository = OfflineMusicRepository(musicDatabase.musicDAO())
             FavoritePlaylistViewModel(app, app.contentResolver, offlineMusicRepository)
+        }
+        initializer {
+            val app = arcaneApplication()
+            val musicDatabase = MusicDatabase.getDataBase(app)
+            val offlineMusicRepository = OfflineMusicRepository(musicDatabase.musicDAO())
+            ArtistViewModel(app, app.contentResolver, offlineMusicRepository)
         }
     }
 }

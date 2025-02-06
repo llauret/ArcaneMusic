@@ -17,4 +17,7 @@ class OfflineMusicRepository(private val musicDAO: MusicDAO) : MusicRepository {
 
     override suspend fun getFavoritePlaylist(): Flow<List<Music>> =
         musicDAO.getFavoritePlaylist()
+
+    override suspend fun getArtists(): Flow<List<ArtistSongCount>> =
+        musicDAO.getArtists()
 }

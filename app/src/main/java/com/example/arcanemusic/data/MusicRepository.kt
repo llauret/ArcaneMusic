@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface MusicRepository {
     fun getAllMusic(): Flow<MutableList<Music>>
+    suspend fun getArtists(): Flow<List<ArtistSongCount>>
     suspend fun addToFavoritePlaylist(favorite: FavoritePlaylist)
     suspend fun insertMusic(music: Music)
     suspend fun getFavoritePlaylist(): Flow<List<Music>>
